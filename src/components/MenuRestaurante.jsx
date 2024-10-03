@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ShoppingCart, X } from "lucide-react"
 
 function CarritoModal({ isOpen, onClose, items, onRemoveItem }) {
@@ -106,62 +106,89 @@ function CarritoModal({ isOpen, onClose, items, onRemoveItem }) {
   )
 }
 
-export default function MenuRestaurante({platos}) {
-  const [cantidades, setCantidades] = useState(
-    platos.reduce((acc, plato) => ({ ...acc, [plato.nombre]: 0 }), {})
-  )
-  const [carrito, setCarrito] = useState([])
-  const [isCarritoOpen, setIsCarritoOpen] = useState(false)
-
-  const categorias = Array.from(new Set(platos.map(plato => plato.categoria)))
+export default function MenuRestaurante() {
+  const urlApi = import.meta.env.VITE_API_URL;
+  const [productos, setProductos] = useState([]);
+  const [cantidades, setCantidades] = useState({});
+  const [carrito, setCarrito] = useState([]);
+  const [isCarritoOpen, setIsCarritoOpen] = useState(false);
 
   const actualizarCantidad = (nombre, delta) => {
     setCantidades(prev => ({
       ...prev,
-      [nombre]: Math.max(0, prev[nombre] + delta)
-    }))
-  }
+      [nombre]: Math.max(0, (prev[nombre] || 0) + delta)
+    }));
+  };
 
   const agregarAlCarrito = (plato) => {
-    const cantidad = cantidades[plato.nombre]
+    const cantidad = cantidades[plato.nombre];
     if (cantidad > 0) {
       setCarrito(prevCarrito => {
-        const itemExistente = prevCarrito.find(item => item.nombre === plato.nombre)
+        const itemExistente = prevCarrito.find(item => item.nombre === plato.nombre);
         if (itemExistente) {
           return prevCarrito.map(item =>
             item.nombre === plato.nombre
               ? { ...item, cantidad: item.cantidad + cantidad }
               : item
-          )
+          );
         } else {
-          return [...prevCarrito, { ...plato, cantidad }]
+          return [...prevCarrito, { ...plato, cantidad }];
         }
-      })
-      setCantidades(prev => ({ ...prev, [plato.nombre]: 0 }))
+      });
+      setCantidades(prev => ({ ...prev, [plato.nombre]: 0 }));
     }
-  }
+  };
 
   const removerDelCarrito = (nombre) => {
-    setCarrito(prevCarrito => prevCarrito.filter(item => item.nombre !== nombre))
-  }
+    setCarrito(prevCarrito => prevCarrito.filter(item => item.nombre !== nombre));
+  };
 
-  const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0)
+  const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+
+  useEffect(() => {
+    const fetchProductos = async () => {
+      try {
+        const response = await fetch(`${urlApi}/producto`);
+        if (!response.ok) {
+          throw new Error("Error en la petición");
+        }
+        const data = await response.json();
+        setProductos(data);
+        // Inicializa las cantidades de los productos después de obtener los datos
+        const cantidadesIniciales = data.reduce((acc, plato) => ({ ...acc, [plato.nombre]: 0 }), {});
+        setCantidades(cantidadesIniciales);
+
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchProductos();
+  }, [urlApi]);
+
+    // Obtener categorías de productos
+    const categorias = Array.from(new Set(productos.map(plato => plato.categoria.nombre)));
+    
+    const categoriasOrdenadas = Array.from(
+      new Set(productos.map(plato => plato.categoria.id)) // Elimina duplicados basados en el id de categoría
+    )
+      .map(id => productos.find(plato => plato.categoria.id === id).categoria) // Mapea cada ID a su objeto de categoría
+      .sort((a, b) => a.id - b.id); // Ordena por ID
+
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container w-full mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Menú del Restaurante</h1>
-      
-      {categorias.map(categoria => (
-        <div key={categoria} className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">{categoria}</h2>
+      {categoriasOrdenadas.map(categoria => (
+        <div key={categoria.id} className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">{categoria.nombre}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {platos
-              .filter(plato => plato.categoria === categoria)
+            {productos
+              .filter(plato => plato.categoria.id === categoria.id)
               .map(plato => (
-                <div key={plato.nombre} className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col">
+                <div key={plato.id} className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col">
                   <div className="p-4">
                     <img
-                      src="https://s1.eestatic.com/2019/05/27/cocinillas/restaurantes/restaurantes_401721774_123984077_1706x960.jpg"
+                      src={plato.listaImagenes[0] ?  `${urlApi}/images/${plato.listaImagenes[0]}` : "/img/image-not-found.png"}
                       alt={plato.nombre}
                       width={300}
                       height={200}
@@ -178,7 +205,7 @@ export default function MenuRestaurante({platos}) {
                       >
                         -
                       </button>
-                      <span className="text-lg font-semibold">{cantidades[plato.nombre]}</span>
+                      <span className="text-lg font-semibold">{cantidades[plato.nombre] || 0}</span>
                       <button
                         className="px-2 py-1 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
                         onClick={() => actualizarCantidad(plato.nombre, 1)}
@@ -218,5 +245,5 @@ export default function MenuRestaurante({platos}) {
         onRemoveItem={removerDelCarrito} 
       />
     </div>
-  )
+  );
 }
