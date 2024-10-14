@@ -18,6 +18,8 @@ export default function LoginForm() {
     setError('')
 
     try {
+      console.log(username + " - " + password)
+      
       const response = await fetch(`${urlApi}:8080/auth/login`, {
         method: 'POST',
         headers: {
@@ -40,6 +42,7 @@ export default function LoginForm() {
         throw new Error('Invalid response from server')
       }
     } catch (err) {
+      console.log(err)
       setError('Usuario o contraseña inválidos')
     } finally {
       setIsLoading(false)
