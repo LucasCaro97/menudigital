@@ -10,6 +10,7 @@ export default function LoginForm() {
   const [error, setError] = useState('')
   const navigate = useNavigate()
   const { login } = useAuth()
+  const urlApi = import.meta.env.VITE_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -17,7 +18,7 @@ export default function LoginForm() {
     setError('')
 
     try {
-      const response = await fetch('http://localhost:8080/auth/login', {
+      const response = await fetch(`http://${urlApi}:8080/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
