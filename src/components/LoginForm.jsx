@@ -19,8 +19,8 @@ export default function LoginForm() {
 
     try {
       console.log(username + " - " + password)
-      
-      const response = await fetch(`${urlApi}:8080/auth/login`, {
+
+      const response = await fetch(`${urlApi}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
