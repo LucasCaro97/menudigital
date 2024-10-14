@@ -18,7 +18,7 @@ export default function LoginForm() {
     setError('')
 
     try {
-      const response = await fetch(`http://${urlApi}:8080/auth/login`, {
+      const response = await fetch(`${urlApi}:8080/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
