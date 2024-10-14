@@ -1,13 +1,21 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
+import { useAuth } from './AuthContext'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
+  const { isLoggedIn, logout } = useAuth()
+  const navigate = useNavigate()
 
   const toggleMenu = () => {
     setIsOpen(!isOpen)
   }
+
+  const handleLogout = () => {
+    logout();
+    navigate('/')
+  };
 
   return (
     <nav className="bg-black text-white">
@@ -20,12 +28,22 @@ export default function Navbar() {
           </div>
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">
-              <Link to="/alta-categorias" className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">
-                Alta de Categorías
-              </Link>
-              <Link to="/alta-platos" className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">
-                Alta de Platos
-              </Link>
+              {isLoggedIn && (
+                <>
+                  <Link to="/alta-categorias" className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">
+                    Alta de Categorías
+                  </Link>
+                  <Link to="/alta-platos" className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">
+                    Alta de Platos
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Cerrar Sesión
+                  </button>
+                </>
+              )}
             </div>
           </div>
           <div className="md:hidden">
@@ -47,12 +65,22 @@ export default function Navbar() {
       {isOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <Link to="/alta-categorias" className="hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium">
-              Alta de Categorías
-            </Link>
-            <Link to="/alta-platos" className="hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium">
-              Alta de Platos
-            </Link>
+            {isLoggedIn && (
+              <>
+                <Link to="/alta-categorias" className="hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium">
+                  Alta de Categorías
+                </Link>
+                <Link to="/alta-platos" className="hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium">
+                  Alta de Platos
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium w-full text-left"
+                >
+                  Cerrar Sesión
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}

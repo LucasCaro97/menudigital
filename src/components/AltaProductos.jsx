@@ -131,9 +131,14 @@ export default function AltaProductos() {
         : `${urlApi}/producto`
       const method = editingProductId ? 'PUT' : 'POST'
 
+      const token = localStorage.getItem('authToken');
+
       const response = await fetch(url, {
         method: method,
         body: formData,
+        headers: {
+          'Authorization': `Bearer ${token}`, 
+        }
       })
       if (!response.ok) {
         throw new Error('Error al crear/editar el producto')

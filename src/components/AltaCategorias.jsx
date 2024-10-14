@@ -27,6 +27,8 @@ export default function AltaCategorias() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    const token = localStorage.getItem('authToken');
+
     if (!nuevaCategoria.trim()) {
       setError('El nombre de la categoría no puede estar vacío')
       return
@@ -37,7 +39,9 @@ export default function AltaCategorias() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-        },
+          'Authorization': `Bearer ${token}`
+        }, 
+        
         body: JSON.stringify({ nombre: nuevaCategoria }),
       })
       if (!response.ok) {

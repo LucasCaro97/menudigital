@@ -43,7 +43,7 @@ function CarritoModal({ isOpen, onClose, items, onRemoveItem }) {
               {items.map((item, index) => (
                 <li key={index} className="flex justify-between items-center">
                   <span>{item.nombre} x {item.cantidad}</span>
-                  <span>${(item.precio * item.cantidad).toFixed(2)}</span>
+                  <span>${(item.precio * item.cantidad).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                   <button
                     onClick={() => onRemoveItem(item.nombre)}
                     className="text-red-500 hover:text-red-700"
@@ -54,7 +54,7 @@ function CarritoModal({ isOpen, onClose, items, onRemoveItem }) {
               ))}
             </ul>
             <div className="mt-4 text-xl font-semibold">
-              Total: ${total.toFixed(2)}
+              Total: ${total.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2})}
             </div>
             {!showForm ? (
               <button
