@@ -81,6 +81,7 @@ export default function AltaProductos() {
   }
 
   const handleImagenRemove = async (index, imagenUrl) => {
+    const token = localStorage.getItem('authToken')
     const imagen = nuevoProducto.listaImagenes[index]
     if (imagen.isNew) {
       setNuevoProducto(prev => ({
@@ -91,6 +92,9 @@ export default function AltaProductos() {
       try {
         const response = await fetch(`${urlApi}/producto/${editingProductId}/deleteImage/${imagenUrl}`, {
           method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`, 
+          }
         })
         if (!response.ok) {
           throw new Error('Error al eliminar la imagen')
