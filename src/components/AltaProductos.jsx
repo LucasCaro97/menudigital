@@ -286,7 +286,7 @@ export default function AltaProductos() {
                     {nuevoProducto.listaImagenes.map((imagen, index) => (
                       <div key={index} className="relative">
                         <img
-                          src={imagen.isNew ? imagen.url : `http://localhost:8080/images/${imagen.url}`}
+                          src={imagen.isNew ? imagen.url : `${urlApi}/images/${imagen.url}`}
                           alt={`Imagen ${index + 1}`}
                           className="w-full h-32 object-cover rounded"
                         />

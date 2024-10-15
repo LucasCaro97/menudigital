@@ -14,7 +14,7 @@ function CarritoModal({ isOpen, onClose, items, onRemoveItem }) {
       return;
     }
 
-    const phoneNumber = "5493751364441";
+    const phoneNumber = "5493757302125";
     const itemsList = items.map(item => `${item.nombre} x ${item.cantidad}`).join('\n');
     const message = encodeURIComponent(
       `Hola, me gustaría realizar el siguiente pedido:\n\nNombre: ${nombre}\nDirección: ${direccion}\n\nPedido:\n${itemsList}\n\nTotal: $${total.toFixed(2)}`
