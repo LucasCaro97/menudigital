@@ -18,8 +18,6 @@ export default function LoginForm() {
     setError('')
 
     try {
-      console.log(username + " - " + password)
-
       const response = await fetch(`${urlApi}/auth/login`, {
         method: 'POST',
         headers: {

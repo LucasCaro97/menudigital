@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { PlusCircle, X, Edit, ChevronDown, ChevronUp } from 'lucide-react'
+import { jwtDecode } from 'jwt-decode';
+import Navbar from './Navbar';
 
 export default function AltaProductos() {
   const [productosPorCategoria, setProductosPorCategoria] = useState({})
@@ -24,7 +26,21 @@ export default function AltaProductos() {
 
   const fetchProductos = async () => {
     try {
-      const response = await fetch(`${urlApi}/producto`)
+      const token = localStorage.getItem('authToken');
+      if(!token){
+        setError("No se encontro un token de autenticacion")
+        return;
+      }
+
+      const decoded = jwtDecode(token);
+      const userId = decoded.id
+
+      if(!userId){
+        setError("El token no contiene un ID de usuario valido")
+        return;
+      }
+
+      const response = await fetch(`${urlApi}/producto/getAll/${userId}`)
       if (!response.ok) {
         throw new Error('Error al obtener los productos')
       }
@@ -113,11 +129,27 @@ export default function AltaProductos() {
       return
     }
     try {
+      
+      const token = localStorage.getItem('authToken');
+      if(!token){
+        setError("No se encontro un token de autenticacion")
+        return;
+      }
+
+      const decoded = jwtDecode(token);
+      const userId = decoded.id
+
+      if(!userId){
+        setError("El token no contiene un ID de usuario valido")
+        return;
+      }
+
       const formData = new FormData()
       formData.append('nombre', nuevoProducto.nombre)
       formData.append('categoria', nuevoProducto.categoria)
       formData.append('descripcion', nuevoProducto.descripcion)
       formData.append('precio', nuevoProducto.precio)
+      formData.append('idUsuario', userId)
       nuevoProducto.listaImagenes.forEach((imagen, index) => {
         if (imagen.isNew) {
           formData.append(`imagen`, imagen.file)
@@ -126,12 +158,11 @@ export default function AltaProductos() {
         }
       })
 
+
       const url = editingProductId 
         ? `${urlApi}/producto/${editingProductId}` 
         : `${urlApi}/producto`
       const method = editingProductId ? 'PUT' : 'POST'
-
-      const token = localStorage.getItem('authToken');
 
       const response = await fetch(url, {
         method: method,
@@ -185,6 +216,7 @@ export default function AltaProductos() {
 
   return (
     <div className="container mx-auto p-4">
+      <Navbar/>
       <h1 className="text-3xl font-bold mb-6">Alta de Productos</h1>
       
       <button

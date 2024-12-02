@@ -7,19 +7,22 @@ import AltaCategorias from './components/AltaCategorias'
 import AltaProductos from './components/AltaProductos'
 import LoginForm from './components/LoginForm'
 import { AuthProvider } from './components/AuthContext'
+import LandingPage from './pages/LandingPage'
+import RegistroForm from './components/RegisterForm'
 
 function App() {
   return (
     <>
     <AuthProvider>
-    <Router>
-      <Navbar />
-      <TopBanner />      
+    <Router>      
       <Routes>
-        <Route path="/" element={<MenuRestaurante />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/alta-categorias" element={<AltaCategorias/>} />
         <Route path="/alta-platos"  element={<AltaProductos/>} />
         <Route path="/login"  element={<LoginForm/>} />
+        <Route path="/registro"  element={<RegistroForm/>} />
+        <Route path="/menu"  element={<MenuRestaurante/>} />
+        
       </Routes>
     </Router>
     </AuthProvider>

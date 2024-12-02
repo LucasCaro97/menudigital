@@ -23,15 +23,18 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           <div className="flex-shrink-0 flex items-center">
             <Link to="/" className="font-bold text-xl">
-              Como en Ksa Bodegon
+              Pagina Principal
             </Link>
           </div>
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">
               {isLoggedIn && (
                 <>
-                  <Link to="/alta-categorias" className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">
+                  <Link to="/alta-categorias" className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium hidden">
                     Alta de Categorías
+                  </Link>
+                  <Link to="/menu" className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">
+                    Menu
                   </Link>
                   <Link to="/alta-platos" className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">
                     Alta de Platos
