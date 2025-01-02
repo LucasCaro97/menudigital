@@ -216,7 +216,6 @@ export default function AltaProductos() {
 
   return (
     <div className="container mx-auto p-4">
-      <Navbar/>
       <h1 className="text-3xl font-bold mb-6">Alta de Productos</h1>
       
       <button

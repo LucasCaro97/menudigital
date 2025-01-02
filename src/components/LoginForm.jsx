@@ -35,7 +35,7 @@ export default function LoginForm() {
       if (data.status && data.jwt) {
         login(data.jwt)
         console.log('Login successful:', data.message)
-        navigate('/')
+        navigate('/dashboard')
       } else {
         throw new Error('Invalid response from server')
       }

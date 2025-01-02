@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { ShoppingCart, X, Star, MapPin, Phone } from "lucide-react"
 import { TopBanner } from "./TopBanner"
 import Navbar from "./Navbar"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { useLocation } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
@@ -119,8 +119,7 @@ export default function MenuRestaurante() {
   const [carrito, setCarrito] = useState([]);
   const [isCarritoOpen, setIsCarritoOpen] = useState(false);
   const location = useLocation();
-  const { restaurantId } = location.state || {}; // Obtener el ID del restaurante
-  const navigate = useNavigate()
+  const { razonSocialParam } = useParams();
 
   const actualizarCantidad = (nombre, delta) => {
     setCantidades(prev => ({
@@ -156,51 +155,20 @@ export default function MenuRestaurante() {
 
   useEffect(() => {
     const fetchProductos = async () => {
-      
-      if(!restaurantId){
-        try {
-          const token = localStorage.getItem('authToken');
-          if(!token){
-          navigate("/unauthorized")
-          return;
-          }
-  
-        const decoded = jwtDecode(token);
-        const userId = decoded.id
-  
-        if(!userId){
-          alert("El token no contiene un ID de usuario valido")
-          return;
+      console.log("Param " + razonSocialParam)
+      try {
+        console.log(`${urlApi}/producto/getAllByName/${razonSocialParam}`)
+        const response = await fetch(`${urlApi}/producto/getAllByName/${razonSocialParam}`);
+        if (!response.ok) {
+          throw new Error("Error en la petición");
         }
-  
-          const response = await fetch(`${urlApi}/producto/getAll/${userId}`);
-          if (!response.ok) {
-            throw new Error("Error en la petición");
-          }
-          const data = await response.json();
-          setProductos(data);
-          const cantidadesIniciales = data.reduce((acc, plato) => ({ ...acc, [plato.nombre]: 0 }), {});
-          setCantidades(cantidadesIniciales);
-        } catch (error) {
-          console.log(error);
-        }
-      }else{
-        try {
-          
-          const response = await fetch(`${urlApi}/producto/getAll/${restaurantId}`);
-          if (!response.ok) {
-            throw new Error("Error en la petición");
-          }
-          const data = await response.json();
-          setProductos(data);
-          const cantidadesIniciales = data.reduce((acc, plato) => ({ ...acc, [plato.nombre]: 0 }), {});
-          setCantidades(cantidadesIniciales);
-        } catch (error) {
-          console.log(error);
-        }
-
+        const data = await response.json();
+        setProductos(data);
+        const cantidadesIniciales = data.reduce((acc, plato) => ({ ...acc, [plato.nombre]: 0 }), {});
+        setCantidades(cantidadesIniciales);
+      } catch (error) {
+        console.log(error);
       }
-      
       
       
       
@@ -217,8 +185,8 @@ export default function MenuRestaurante() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
-            <main className="flex-grow container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-8 text-gray-800">Menú del Restaurante</h1>
+      <main className="flex-grow container mx-auto px-4 py-8">
+        <h1 className="text-4xl font-bold mb-8 text-gray-800">Menú de {razonSocialParam}</h1>
         {categoriasOrdenadas.map(categoria => (
           <section key={categoria.id} className="mb-12">
             <h2 className="text-3xl font-semibold mb-6 text-gray-800">{categoria.nombre}</h2>

@@ -122,9 +122,9 @@ const LandingPage = () => {
     }, 1500);
   };
 
-  const handleCardClick = (id) => {
+  const handleCardClick = (razonSocial) => {
     // Redirigir a /menu y pasar el ID como estado
-    navigate('/menu', { state: { restaurantId: id } });
+    navigate(`/menu/${encodeURIComponent(razonSocial)}`);
   };
 
   const carouselItems = [
@@ -273,7 +273,7 @@ const LandingPage = () => {
                   <div
                   key={restaurant.id}
                   className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105 cursor-pointer"
-                  onClick={() => handleCardClick(restaurant.id)}
+                  onClick={() => handleCardClick(restaurant.razonSocial)}
                 >
                     <img src='/img/restaurant_logo.png?height=200&width=200' alt={restaurant.razonSocial} className="w-full h-48 object-cover" />
                     <div className="p-4">

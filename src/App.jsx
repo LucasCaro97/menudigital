@@ -9,12 +9,17 @@ import LoginForm from './components/LoginForm'
 import { AuthProvider } from './components/AuthContext'
 import LandingPage from './pages/LandingPage'
 import RegistroForm from './components/RegisterForm'
+import MenuRestaurantePorUsuario from './components/MenuRestaurantePorUsuario'
+import Dashboard from './pages/Dashboard'
+import UnauthorizedAccess from './components/UnauthorizedAccess'
 
 function App() {
   return (
     <>
-    <AuthProvider>
-    <Router>      
+    <Router>
+      
+    <AuthProvider>    
+    <Navbar />  
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/alta-categorias" element={<AltaCategorias/>} />
@@ -22,10 +27,13 @@ function App() {
         <Route path="/login"  element={<LoginForm/>} />
         <Route path="/registro"  element={<RegistroForm/>} />
         <Route path="/menu"  element={<MenuRestaurante/>} />
+        <Route path="/menu/:razonSocialParam"  element={<MenuRestaurantePorUsuario/>} />
+        <Route path="/dashboard"  element={<Dashboard/>} />
+        <Route path="/unauthorized"  element={<UnauthorizedAccess/>} />
         
       </Routes>
+      </AuthProvider>
     </Router>
-    </AuthProvider>
     </>
   )
 }
