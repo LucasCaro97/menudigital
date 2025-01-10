@@ -28,13 +28,13 @@ export default function Navbar() {
           </div>
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">
-              {isLoggedIn && (
+              {isLoggedIn ? (
                 <>
-                  <Link to="/alta-categorias" className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium hidden">
-                    Alta de Categorías
+                  <Link to="/dashboard" className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">
+                    Dashboard
                   </Link>
                   <Link to="/menu" className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">
-                    Menu
+                    Ver Menu
                   </Link>
                   <Link to="/alta-platos" className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">
                     Alta de Platos
@@ -46,6 +46,10 @@ export default function Navbar() {
                     Cerrar Sesión
                   </button>
                 </>
+              ) : (
+                <Link to="/login" className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">
+                    Iniciar Sesion
+                  </Link>
               )}
             </div>
           </div>
@@ -68,21 +72,28 @@ export default function Navbar() {
       {isOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {isLoggedIn && (
+            {isLoggedIn ? (
               <>
-                <Link to="/alta-categorias" className="hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium">
-                  Alta de Categorías
+                <Link to="/dashboard" onClick={ () => setIsOpen(false)} className="hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium">
+                  Dashboard
                 </Link>
-                <Link to="/alta-platos" className="hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium">
+                <Link to="/menu" onClick={ () => setIsOpen(false)} className="hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium">
+                  Ver Menu
+                </Link>
+                <Link to="/alta-platos" onClick={ () => setIsOpen(false)} className="hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium">
                   Alta de Platos
                 </Link>
                 <button
-                  onClick={handleLogout}
+                  onClick={() => {handleLogout(); setIsOpen(false)} }
                   className="hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium w-full text-left"
                 >
                   Cerrar Sesión
                 </button>
               </>
+            ): (
+              <Link to="/login" onClick={ () => setIsOpen(false)} className="hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium">
+                  Iniciar Sesion
+                </Link>
             )}
           </div>
         </div>

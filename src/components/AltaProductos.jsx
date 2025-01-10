@@ -105,8 +105,10 @@ export default function AltaProductos() {
       }))
     } else {
       try {
+        const token = localStorage.getItem('authToken')
         const response = await fetch(`${urlApi}/producto/${editingProductId}/deleteImage/${imagenUrl}`, {
           method: 'DELETE',
+          headers: {'Authorization': `Bearer ${token}`}
         })
         if (!response.ok) {
           throw new Error('Error al eliminar la imagen')
@@ -142,7 +144,7 @@ export default function AltaProductos() {
       if(!userId){
         setError("El token no contiene un ID de usuario valido")
         return;
-      }
+      } 
 
       const formData = new FormData()
       formData.append('nombre', nuevoProducto.nombre)
@@ -172,7 +174,8 @@ export default function AltaProductos() {
         }
       })
       if (!response.ok) {
-        throw new Error('Error al crear/editar el producto')
+        const errorData = await response.json();
+        throw new Error(errorData.errorMessage)
       }
       await fetchProductos()
       setNuevoProducto({
@@ -186,8 +189,20 @@ export default function AltaProductos() {
       setIsFormOpen(false)
       setEditingProductId(null)
     } catch (error) {
-      setError('Error al crear/editar el producto')
-      console.error('Error:', error)
+      let errorMessage = 'Error al crear/editar el producto';
+      if(error.response){
+        try{
+          const errorData = await error.response.json();
+          errorMessage = errorData.errorMessage || errorMessage;  
+        }catch(parseError){
+          console.error("Error al analizar el mensaje de error", parseError)
+        }
+      }else if(error.message){
+        errorMessage = error.message
+      }
+
+      setError(errorMessage)
+      console.error("Error:", error)
     }
   }
 

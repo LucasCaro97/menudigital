@@ -7,6 +7,7 @@ import {
   ShoppingBag,
   TrendingUp,
   BarChart2,
+  Pizza,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -42,6 +43,8 @@ const Dashboard = () => {
   const [monthlyOrders, setMonthlyOrders] = useState(0);
   const [bestSellingProducts, setBestSellingProducts] = useState([]);
   const [profileImg, setProfileImg] = useState();
+  const [cantidadProductos, setCantidadProductos] = useState();
+
   const urlApi = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
@@ -67,10 +70,24 @@ const Dashboard = () => {
       }
       const data = await response.json();
       setUser(data);
+      fetchCantidadProductos(data.id)
     } catch (error) {
       console.error(error);
     }
   };
+
+  const fetchCantidadProductos = async (userId) => {
+    try {
+      const response = await fetch(`${urlApi}/producto/getAll/${userId}`);
+      if (!response.ok) {
+        throw new Error("Error en la petición");
+      }
+      const data = await response.json();
+      setCantidadProductos(data.length)
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const fetchPlanData = async () => {
     try {
@@ -271,7 +288,7 @@ const Dashboard = () => {
                 </p>
                 <p>
                   <strong>Plan:</strong>{" "}
-                  {user.plan.nombre + " - $" + user.plan.precio}
+                  {user.plan.nombre + " - $" + user.plan.precio + " - " + user.plan.cantidadProductos + " productos"}
                 </p>
               </div>
             </div>
@@ -390,7 +407,7 @@ const Dashboard = () => {
                     </option>
                     {planList.map((item) => (
                       <option key={item.id} value={item.id}>
-                        {item.nombre + " - $" + item.precio}
+                        {item.nombre + " - $" + item.precio + " - " + item.cantidadProductos + " productos"}
                       </option>
                     ))}
                   </select>
@@ -405,12 +422,12 @@ const Dashboard = () => {
           {/* Monthly Orders Card */}
           <div className="bg-white shadow rounded-lg p-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">
-              Monthly Orders
+              Productos Creados
             </h2>
             <div className="flex items-center">
-              <ShoppingBag size={48} className="text-blue-500 mr-4" />
+              <Pizza size={48} className="text-blue-500 mr-4" />
               <span className="text-4xl font-bold text-gray-700">
-                {monthlyOrders}
+                {cantidadProductos}
               </span>
             </div>
           </div>
@@ -418,19 +435,14 @@ const Dashboard = () => {
           {/* Best Selling Products Card */}
           <div className="bg-white shadow rounded-lg p-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">
-              Best Selling Products
+              Proximamente recepcion de pedidos
             </h2>
-            <ul>
-              {bestSellingProducts.map((product, index) => (
-                <li
-                  key={index}
-                  className="flex justify-between items-center mb-2"
-                >
-                  <span>{product.name}</span>
-                  <span className="font-semibold">{product.sales} sales</span>
-                </li>
-              ))}
-            </ul>
+            <div className="flex items-center">
+              <ShoppingBag size={48} className="text-blue-500 mr-4" />
+              <span className="text-4xl font-bold text-gray-700">
+                ---
+              </span>
+            </div>
           </div>
         </div>
 
@@ -438,7 +450,7 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="bg-white shadow rounded-lg p-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">
-              Revenue Trends
+              Best Selling Products
             </h2>
             <div className="flex items-center justify-center h-48 bg-gray-200 rounded">
               <TrendingUp size={48} className="text-gray-400" />

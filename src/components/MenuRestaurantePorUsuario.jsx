@@ -155,7 +155,6 @@ export default function MenuRestaurante() {
 
   useEffect(() => {
     const fetchProductos = async () => {
-      console.log("Param " + razonSocialParam)
       try {
         console.log(`${urlApi}/producto/getAllByName/${razonSocialParam}`)
         const response = await fetch(`${urlApi}/producto/getAllByName/${razonSocialParam}`);
