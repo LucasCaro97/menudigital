@@ -11,7 +11,8 @@ export default function AltaProductos() {
     categoria: '',
     descripcion: '',
     precio: '',
-    listaImagenes: []
+    listaImagenes: [],
+    disponible: true
   })
   const [error, setError] = useState('')
   const [isFormOpen, setIsFormOpen] = useState(false)
@@ -152,6 +153,7 @@ export default function AltaProductos() {
       formData.append('descripcion', nuevoProducto.descripcion)
       formData.append('precio', nuevoProducto.precio)
       formData.append('idUsuario', userId)
+      formData.append('disponible', nuevoProducto.disponible)
       nuevoProducto.listaImagenes.forEach((imagen, index) => {
         if (imagen.isNew) {
           formData.append(`imagen`, imagen.file)
@@ -183,7 +185,8 @@ export default function AltaProductos() {
         categoria: '',
         descripcion: '',
         precio: '',
-        listaImagenes: []
+        listaImagenes: [],
+        disponible: true
       })
       setError('')
       setIsFormOpen(false)
@@ -216,7 +219,8 @@ export default function AltaProductos() {
         url: imagen,
         nombre: imagen.split('/').pop(),
         isNew: false
-      }))
+      })),
+      disponible: producto.disponible
     })
     setEditingProductId(producto.id)
     setIsFormOpen(true)
@@ -240,7 +244,8 @@ export default function AltaProductos() {
             categoria: '',
             descripcion: '',
             precio: '',
-            listaImagenes: []
+            listaImagenes: [],
+            disponible: true
           })
           setEditingProductId(null)
           setIsFormOpen(true)
@@ -346,6 +351,18 @@ export default function AltaProductos() {
                       </div>
                     ))}
                   </div>
+                </div>
+                <div className="mb-4">
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="disponible"
+                      checked={nuevoProducto.disponible}
+                      onChange={(e) => setNuevoProducto(prev => ({ ...prev, disponible: e.target.checked }))}
+                      className="form-checkbox h-5 w-5 text-blue-600"
+                    />
+                    <span className="ml-2 text-gray-700">Disponible</span>
+                  </label>
                 </div>
                 {error && <p className="text-red-500 text-xs italic mb-4">{error}</p>}
                 <div className="flex items-center justify-between">

@@ -129,6 +129,7 @@ export default function MenuRestaurante() {
   };
 
   const agregarAlCarrito = (plato) => {
+    if(plato.disponible) return; //Previene el agregado de platos no disponibles
     const cantidad = cantidades[plato.nombre];
     if (cantidad > 0) {
       setCarrito(prevCarrito => {
@@ -189,12 +190,12 @@ export default function MenuRestaurante() {
         {categoriasOrdenadas.map(categoria => (
           <section key={categoria.id} className="mb-12">
             <h2 className="text-3xl font-semibold mb-6 text-gray-800">{categoria.nombre}</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> {/* Updated grid class */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {productos
                 .filter(plato => plato.categoria.id === categoria.id)
                 .map(plato => (
                   <div key={plato.id} className="bg-white rounded-lg shadow-md overflow-hidden flex transition-transform duration-300 hover:scale-105">
-                    <div className="w-1/6 min-w-[120px]"> {/* Updated image container */}
+                    <div className="w-1/6 min-w-[120px]">
                       <img
                         src={plato.listaImagenes[0] ? `${urlApi}/images/${plato.listaImagenes[0]}` : "/img/image-not-found.png"}
                         alt={plato.nombre}
@@ -204,13 +205,14 @@ export default function MenuRestaurante() {
                     <div className="p-4 flex-grow flex flex-col justify-between">
                       <div>
                         <h3 className="text-xl font-semibold mb-2 text-gray-800">{plato.nombre}</h3>
-                        <p className="text-lg font-bold text-blue-600 mb-4">${plato.precio.toFixed(2)}</p> {/* Updated price margin */}
+                        <p className="text-lg font-bold text-blue-600 mb-4">${plato.precio.toFixed(2)}</p>
                       </div>
                       <div className="flex justify-between items-center">
                         <div className="flex items-center space-x-2">
                           <button
                             className="px-2 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
                             onClick={() => actualizarCantidad(plato.nombre, -1)}
+                            disabled={!plato.disponible}
                           >
                             -
                           </button>
@@ -218,15 +220,17 @@ export default function MenuRestaurante() {
                           <button
                             className="px-2 py-1 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
                             onClick={() => actualizarCantidad(plato.nombre, 1)}
+                            disabled={!plato.disponible}
                           >
                             +
                           </button>
                         </div>
                         <button 
-                          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+                          className={`px-4 py-2 ${plato.disponible ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed'} text-white rounded-md transition-colors`}
                           onClick={() => agregarAlCarrito(plato)}
+                          disabled={!plato.disponible}
                         >
-                          Agregar
+                          {plato.disponible ? 'Agregar' : 'No disponible'}
                         </button>
                       </div>
                     </div>
